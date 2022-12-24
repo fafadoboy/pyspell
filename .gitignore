@@ -1,0 +1,7 @@
+.vscode
+dist
+*.egg*
+**/__pycache__
+**/data
+**/*.mp3
+build
