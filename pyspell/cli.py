@@ -3,6 +3,8 @@ from pyspell.sets import practice_set
 from pyspell.utils import *
 from pyspell.sets.utils import *
 from tabulate import tabulate
+import uuid
+from pathlib import Path
 import re
 
 import click
@@ -25,8 +27,29 @@ def cli():
 @cli.command("init", help="initialize the application (a mandatory)")
 @click.argument("db")
 def init_db(db):
-    click.echo(click.style("RUN COMMAND:", fg="yellow", bold=True))
-    click.echo(click.style(f"echo 'export PYSPELL_DB={db}' >> ~/.zshrc && source ~/zshrc"))
+    if not os.path.exists(db):
+        db = os.path.join(os.environ["HOME"], ".pyspell", f"pyspell-{uuid.uuid1()}.db")
+        if not os.path.exists(db):            
+            os.makedirs(os.path.dirname(db), exist_ok=True)
+        Path(db).touch()
+        os.environ["PYSPELL_DB"] = db
+        # CREATE DB FROM SCRATCH
+        con = initdb()
+        cur = con.cursor()
+        script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir, "scripts/sql/tables_create.sql")
+        print(script_path)
+        with open(script_path) as sql_file:
+            sql_script = sql_file.read()
+        cur.executescript(sql_script)
+        con.commit()
+        con.close()
+            
+    copyto = "~/.bashrc && source ~/.bashrc"
+    if os.environ.get("ZSH"):
+        copyto = "~/.zshrc && source ~/.zshrc"
+    
+    click.echo(click.style("RUN COMMAND:", fg="yellow", bold=True))        
+    click.echo(click.style(f"echo 'export PYSPELL_DB={db}' >> {copyto}"))
 
 @cli.command(help="remove existing practice session or practice set")
 @click.argument("src", type=click.Choice(["sets", "practices"], case_sensitive=True))
