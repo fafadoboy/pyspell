@@ -1,0 +1,1 @@
+from pyspell.practice.commands import *
