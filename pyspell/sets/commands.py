@@ -22,13 +22,13 @@ def ls(set_id):
     con = initdb()
     cur = con.cursor()
     
-    table = [get_schema(con, cur, "sets")]
+    table = [["#"] + list(get_schema(con, cur, "sets"))]
         
     cur.execute(query)
     con.commit()
     
-    for row in cur:
-        table.append(row)
+    for n, row in enumerate(cur, start=1):
+        table.append([n] + list(row))
         
     click.echo(click.style(tabulate(table, headers="firstrow", tablefmt="fancy_grid"), fg="bright_white"))
     
