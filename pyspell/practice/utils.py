@@ -31,7 +31,7 @@ def practice_on(words: List[Word]):
                 
                 while True:
                     # click.clear()
-                    click.echo(click.style(f"\n\nDESCRIPTION: \n\t{desc}", fg="blue"))
+                    click.echo(click.style(f"\n\nDESCRIPTION: \n\t{desc}", fg="bright_white"))
                     os.system("afplay " + fname)
                     answer = str.lower(str.strip(click.prompt(f"\nENTER YOUR ANSER")))
                     # hanlde command
