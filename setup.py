@@ -2,10 +2,9 @@ from setuptools import setup
 
 setup(
     name='pyspell',
-    version='0.1.1',
+    version='0.2',
     packages=["pyspell", "pyspell.practice", "pyspell.sets"],
     install_requires=["click", "gtts", "tabulate"],
-    # package_dir={'sqls': "scripts/sql"},
     package_data={'pyspell': ['../scripts/sql/tables_create.sql']},
     include_package_data=True,
     python_requires='>=3.7',
