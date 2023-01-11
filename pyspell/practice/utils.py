@@ -6,7 +6,11 @@ import time
 from typing import List, Union
 from pyspell.practice.models import Word
 
+_PLAYER_ENV_VAR = "PYSPELL_PLAYER"
+
 def practice_on(words: List[Word]):
+    player = "afplay" if _PLAYER_ENV_VAR not in os.environ else os.environ.get(_PLAYER_ENV_VAR)
+    
     def wrapper(indexes: List[int]) -> Union[float, bool, List[int]]:
         click.clear()
         
@@ -32,7 +36,10 @@ def practice_on(words: List[Word]):
                 while True:
                     # click.clear()
                     click.echo(click.style(f"\n\nDESCRIPTION: \n\t{desc}", fg="bright_white"))
-                    os.system("afplay " + fname)
+                    if os.system(f"{player} {fname}") != 0:
+                        click.echo(click.style(f"PLAYER ERROR!", fg="red", bold=True))
+                        exit(1)
+
                     answer = str.lower(str.strip(click.prompt(f"\nENTER YOUR ANSER")))
                     # hanlde command
                     if answer == ".r":
